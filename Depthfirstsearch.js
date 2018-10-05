@@ -1,18 +1,12 @@
-
-/*Depth First Search is implemented using JavaScript.*/
-/**
- *To implement DFS we need BST. BST is a data structure which help us to store values in tree such that all left children values are less
- * than node parent and right children value greater than node parent.   
- * So, when we approach for a value the search area is reduced by comparing with root value and leaving sub child.
- */
 function BinarySearchTree() {
-    
-    this._root = null;
+
+    this.root=null;
+
 }
 
 BinarySearchTree.prototype = {
 
-
+    
     add: function (value){
     
         //create a new item object, place data in
@@ -28,7 +22,6 @@ BinarySearchTree.prototype = {
         //special case: no items in the tree yet
         if (this._root === null){
             this._root = node;
-            console.log(value+" is inserted as root node");
         } else {
             current = this._root;
             
@@ -40,7 +33,6 @@ BinarySearchTree.prototype = {
                     //if there's no left, then the new node belongs there
                     if (current.left === null){
                         current.left = node;
-                        console.log(value+" is inserted as left child to "+ current.value);
                         break;
                     } else {                    
                         current = current.left;
@@ -52,7 +44,6 @@ BinarySearchTree.prototype = {
                     //if there's no right, then the new node belongs there
                     if (current.right === null){
                         current.right = node;
-                        console.log(value+" is inserted as right child to "+current.value);
                         break;
                     } else {                    
                         current = current.right;
@@ -66,7 +57,12 @@ BinarySearchTree.prototype = {
         }
     },
     
-  
+    /**
+     * Determines if the given value is present in the tree.
+     * @param {variant} value The value to find.
+     * @return {Boolean} True if the value is found, false if not.
+     * @method contains
+     */
     contains: function(value){
     
         var found       = false,
@@ -86,14 +82,170 @@ BinarySearchTree.prototype = {
             //values are equal, found it!
             } else {
                 found = true;
-                console.log(value+" is found.");
+                console.log(value+"found");
             }
         }
         if(found==false)
-        console.log(value+" is not found.");
+        console.log(value+"notfound");
         //only proceed if the node was found
         return found;
 
+    },
+    
+    /**
+     * Removes the node with the given value from the tree. This may require
+     * moving around some nodes so that the binary search tree remains
+     * properly balanced.
+     * @param {variant} value The value to remove.
+     * @return {void}
+     * @method remove
+     */
+    remove: function(value){
+    
+        var found       = false,
+            parent      = null,
+            current     = this._root,
+            childCount,
+            replacement,
+            replacementParent;
+            
+        //make sure there's a node to search
+        while(!found && current){
+        
+            //if the value is less than the current node's, go left
+            if (value < current.value){
+                parent = current;
+                current = current.left;
+                
+            //if the value is greater than the current node's, go right
+            } else if (value > current.value){
+                parent = current;
+                current = current.right;
+                
+            //values are equal, found it!
+            } else {
+                found = true;
+            }
+        }
+        
+        //only proceed if the node was found
+        if (found){
+        
+            //figure out how many children
+            childCount = (current.left !== null ? 1 : 0) + (current.right !== null ? 1 : 0);
+        
+            //special case: the value is at the root
+            if (current === this._root){
+                switch(childCount){
+                
+                    //no children, just erase the root
+                    case 0:
+                        this._root = null;
+                        break;
+                        
+                    //one child, use one as the root
+                    case 1:
+                        this._root = (current.right === null ? current.left : current.right);
+                        break;
+                        
+                    //two children, little work to do
+                    case 2:
+
+                        //new root will be the old root's left child...maybe
+                        replacement = this._root.left;
+                        
+                        //find the right-most leaf node to be the real new root
+                        while (replacement.right !== null){
+                            replacementParent = replacement;
+                            replacement = replacement.right;
+                        }
+         
+                        //it's not the first node on the left
+                        if (replacementParent !== null){
+                        
+                            //remove the new root from it's previous position
+                            replacementParent.right = replacement.left;
+                            
+                            //give the new root all of the old root's children
+                            replacement.right = this._root.right;
+                            replacement.left = this._root.left;
+                        } else {
+                        
+                            //just assign the children
+                            replacement.right = this._root.right;
+                        }
+                        
+                        //officially assign new root
+                        this._root = replacement;
+                    
+                    //no default
+                
+                }        
+
+            //non-root values
+            } else {
+            
+                switch (childCount){
+                
+                    //no children, just remove it from the parent
+                    case 0:
+                        //if the current value is less than its parent's, null out the left pointer
+                        if (current.value < parent.value){
+                            parent.left = null;
+                            
+                        //if the current value is greater than its parent's, null out the right pointer
+                        } else {
+                            parent.right = null;
+                        }
+                        break;
+                        
+                    //one child, just reassign to parent
+                    case 1:
+                        //if the current value is less than its parent's, reset the left pointer
+                        if (current.value < parent.value){
+                            parent.left = (current.left === null ? current.right : current.left);
+                            
+                        //if the current value is greater than its parent's, reset the right pointer
+                        } else {
+                            parent.right = (current.left === null ? current.right : current.left);
+                        }
+                        break;    
+
+                    //two children, a bit more complicated
+                    case 2:
+                    
+                        //reset pointers for new traversal
+                        replacement = current.left;
+                        replacementParent = current;
+                        
+                        //find the right-most node
+                        while(replacement.right !== null){
+                            replacementParent = replacement;
+                            replacement = replacement.right;                            
+                        }
+                    
+                        replacementParent.right = replacement.left;
+                        
+                        //assign children to the replacement
+                        replacement.right = current.right;
+                        replacement.left = current.left;
+                        
+                        //place the replacement in the right spot
+                        if (current.value < parent.value){
+                            parent.left = replacement;
+                        } else {
+                            parent.right = replacement;
+                        }                        
+                                        
+                    //no default
+                
+                
+                }
+            
+            }
+        
+        }
+        
     },
     
     /**
@@ -105,7 +257,7 @@ BinarySearchTree.prototype = {
     size: function(){
         var length = 0;
         
-        this.traverse1(function(node){
+        this.traverse(function(node){
             length++;
         });
         
@@ -118,29 +270,13 @@ BinarySearchTree.prototype = {
      * @method toArray
      */
     toArray: function(){
-        var result1 = [];
-        var result2 = [];
-        var result3 = [];
+        var result = [];
         
-        this.traverse1(function(node){
-            result1.push(node.value);
+        this.traverse(function(node){
+            result.push(node.value);
         });
-
-        this.traverse2(function(node){
-            result2.push(node.value);
-        });
-
-        this.traverse3(function(node){
-            result3.push(node.value);
-        });
-
-        console.log("Inorder sequence: "+result1);
-        console.log("Preorder sequence: "+result2);
-        console.log("Postorder sequence: "+result3);
-
-
         
-        //return result;
+        return result;
     },
     
     /**
@@ -159,7 +295,7 @@ BinarySearchTree.prototype = {
      * @return {void}
      * @method traverse
      */
-    traverse1: function(process){
+    traverse: function(process){
         
         //helper function
         function inOrder(node){
@@ -183,65 +319,10 @@ BinarySearchTree.prototype = {
         
         //start with the root
         inOrder(this._root);    
-    },
-
-traverse2: function(process){
-        
-    //helper function
-    function preOrder(node){
-        if (node){
-            
-
-            //call the process method on this node
-            process.call(this, node);
-
-            //traverse the left subtree
-            if (node.left !== null){
-                preOrder(node.left);
-            }            
-              
-        
-            //traverse the right subtree
-            if (node.right !== null){
-                preOrder(node.right);
-            }
-        }        
     }
-    
-    //start with the root
-    preOrder(this._root);    
-},
-traverse3: function(process){
-        
-    //helper function
-    function postOrder(node){
-        if (node){
-            
-
-            
-
-            //traverse the left subtree
-            if (node.left !== null){
-                postOrder(node.left);
-            }            
-              
-        
-            //traverse the right subtree
-            if (node.right !== null){
-                postOrder(node.right);
-            }
-
-            //call the process method on this node
-            process.call(this, node);
-        }        
-    }
-    
-    //start with the root
-    postOrder(this._root);    
-},
-
-
 };
+
+
 var b=new BinarySearchTree();
 //b._root=null;
 b.add(5);
@@ -250,5 +331,6 @@ b.add(4);
 b.add(10);
 b.contains(10);
 b.contains(5);
-b.toArray();
+console.log(b.toArray());
 
+//console.log(b.process());
