@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title>ToDo Undo List</title>
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+<script src="current.js"></script>
+<h2>Todo List</h2>
+<br>
+Enter an element to add:<br>
+<input type="text" name="Insert" id="insertlistTB" placeholder="Enter value into todo list"><br>
+<input type="button" name="add" id="add" value="add" onclick="newElement(null,'add')">
+<input type="button" name="delete" id="delete" value="delete" onclick="removeElement()">
+<input type="button" name="undo" id="undo" value="undo" onclick="undoElement()">
+<input type="button" name="redo" id="redo" value="redo" onclick="redoElement()">
+<ul id="demo"> 
+</ul>
+</body>
+</html>
