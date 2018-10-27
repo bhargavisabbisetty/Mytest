@@ -1,12 +1,20 @@
+html, body {
+  height:100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .close{
     /* position: absolute;
     right: 0;
     top: 0;
-    padding: 12px 16px 12px 16px; */
+    padding: 5px 5px 5px 5px;  */
     float: right;
     cursor: pointer;
     color: #fff;
-    font-size: 22px;
+    font-size: 22px; 
 }
 
 nav{
@@ -58,11 +66,15 @@ a:hover {
     font-size: 15px;
 }  
 
+div{
+  position: relative;
+}
 .todoobjhead{
     border-radius: 5px;
+    /* display: block; */
     /* background-color: #f2f2f2; */
    /* padding-left: 10px;  */
-    height: 118px;
+    height: 350px; 
     width: 260px;
     background-color: powderblue;
     font-family: san-serif;
@@ -71,6 +83,7 @@ a:hover {
     font-style: italic;
     text-decoration:none;
     border: 1px solid powderblue;
+    position: relative;
 }
 
 .todoobjhead:hover{
@@ -78,18 +91,46 @@ a:hover {
 }
 
 .todoobjbody{
-  
+  position: absolute;
   font-family: san-serif;
   font-size: 20px;
   height: 93px;
   width:260px;
-  font-weight: 100;
-  font-style: italic;
+  /* font-weight: 100;
+  font-style: italic; */
   /*padding-right: 10px;*/ 
  background-color: rgb(226, 240, 239);
   text-decoration:none; 
 
   
+}
+
+
+.addBtn{
+  padding: 10px;
+    width: 25%;
+    background: #cef5f7;
+    color: rgb(13, 76, 90);
+    float: left;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 0;
+}
+
+.addBtn:hover {
+  background-color: rgb(166, 231, 240);
+}
+
+.textbox {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  width: 75%;
+  padding: 10px;
+  float: left;
+  font-size: 14px;
 }
 
 [contenteditable]:focus {
@@ -98,4 +139,36 @@ a:hover {
 
 input[type=checkbox]:checked + label.strikethrough{
   text-decoration: line-through;
+}
+
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the list items */
+ul li {
+  cursor: pointer;
+  position: relative;
+  padding: 12px 8px 12px 40px;
+  background: #eee;
+  font-size: 18px;
+  transition: 0.2s;
+
+  /* make the list items unselectable */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Set all odd list items to a different color (zebra-stripes) */
+ul li:nth-child(odd) {
+  background: #c7ebe9;
+}
+
+/* Darker background-color on hover */
+ul li:hover {
+  background: #ddd;
 }
